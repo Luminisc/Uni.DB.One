@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Uni.DB.One.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using Microsoft.AspNetCore.Identity;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using Uni.DB.One.DataAccess;
+using Uni.DB.One.Models;
 
 namespace Uni.DB_Task.Controllers
 {
@@ -28,15 +28,15 @@ namespace Uni.DB_Task.Controllers
                 client = new MongoClient("mongodb://localhost:27017");
             if (database == null)
                 database = client.GetDatabase("SteamDB");
-            var collection = database.GetCollection<ShoppingCartItem>("ShoppingCart");
-            Statics.ShoppingCart = collection.AsQueryable().Select(x => x).ToList();
+            //var collection = database.GetCollection<ShoppingCart>("ShoppingCart").Find(x=>x.UserID == );
+            //Statics.ShoppingCart = collection.AsQueryable().Select(x => x).ToList();
+            //var userID = await _userManager.GetUserAsync(HttpContext.User);
+
+
         }
 
         public async Task<IActionResult> Index()
         {
-            var userID = await _userManager.GetUserAsync(HttpContext.User);
-
-
             var collection = database.GetCollection<GameInfo>("Games").AsQueryable();
             var store = collection.Select(x => new GameInfo()
             {
@@ -106,7 +106,7 @@ namespace Uni.DB_Task.Controllers
             return View(model);
         }
 
-        public IActionResult AddGameToCart(string appid)
+        public async Task<IActionResult> AddGameToCart(string appid)
         {
             var gameInfo = Get($"https://store.steampowered.com/api/appdetails?appids={appid}&cc=ru&l=ru");
             JObject jgames = JsonConvert.DeserializeObject<JObject>(gameInfo);
@@ -130,19 +130,15 @@ namespace Uni.DB_Task.Controllers
                 Price = jgames[appid]["data"]["price_overview"]["final"].Value<int>() / 100,
                 PathThumbnail = game.GetLogoUrl
             };
-            var collection = database.GetCollection<ShoppingCartItem>("ShoppingCart");
-            collection.InsertOne(item);
-            Statics.ShoppingCart = collection.AsQueryable().Select(x => x).ToList();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            ShoppingCartDb.AddItem(user, item);
 
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult RemoveGameFromCart(string id)
+        public async Task<IActionResult> RemoveGameFromCart(string id)
         {
-            var collection = database.GetCollection<ShoppingCartItem>("ShoppingCart");
-            collection.DeleteOne(x => x.Id == ObjectId.Parse(id));
-            Statics.ShoppingCart = collection.AsQueryable().Select(x => x).ToList();
-
+            ShoppingCartDb.RemoveItem(await User(), ObjectId.Parse(id));
             return RedirectToAction("Index", "Home");
         }
 
@@ -159,6 +155,9 @@ namespace Uni.DB_Task.Controllers
                 return reader.ReadToEnd();
             }
         }
+        protected async Task<IdentityUser> User() => await _userManager.GetUserAsync(HttpContext.User);
+
+        
     }
 
 }

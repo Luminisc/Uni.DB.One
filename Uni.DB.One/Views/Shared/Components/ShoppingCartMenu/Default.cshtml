@@ -1,0 +1,31 @@
+﻿@model ShoppingCart
+<form action="@Url.Action("RemoveGameFromCart","Home")" method="post">
+    <div class="shopping-cart ml-30">
+        <a class="top-cart" href="cart.html"><i class="pe-7s-cart"></i></a>
+        <ul>
+            @foreach (var item in Model.Items)
+            {
+                <li>
+                    <div class="cart-img">
+                        <a href="#"><img src="@item.PathThumbnail" alt=""></a>
+                    </div>
+                    <div class="cart-content">
+                        <h3><a href="#">@item.Name</a> </h3>
+                        @*<span><b>S, Orange</b></span>*@
+                        <span class="cart-price">@item.Price руб.</span>
+                    </div>
+                    <div class="cart-del">
+                        <button name="id" value="@item.Id.ToString()"><i class="pe-7s-close-circle"></i></button>
+                    </div>
+                </li>
+            }
+            <li>
+                <div class="shipping">
+                    <span class="f-left">Итого</span>
+                    <span class="f-right cart-price">@Model.Items.Sum(x => x.Price) руб.</span>
+                </div>
+            </li>
+            <li class="checkout m-0"><a href="#">checkout <i class="pe-7s-angle-right"></i></a></li>
+        </ul>
+    </div>
+</form>
