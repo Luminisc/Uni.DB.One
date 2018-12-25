@@ -1,0 +1,176 @@
+﻿@inject Microsoft.AspNetCore.Identity.SignInManager<Microsoft.AspNetCore.Identity.IdentityUser> SignInManager
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/owl.carousel.min.css">
+        <link rel="stylesheet" href="~/css/pe-icon-7-stroke.css">
+        <link rel="stylesheet" href="~/css/font-awesome.min.css">
+        <link rel="stylesheet" href="~/css/meanmenu.css">
+        <link rel="stylesheet" href="~/css/shortcodes/shortcode.css">
+        <link rel="stylesheet" href="~/css/style.css">
+        <link rel="stylesheet" href="~/css/responsive.css">
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+</head>
+<body>
+    <header>
+        <div class="header-area">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3 col-lg-3  col-sm-4 col-xs-4">
+                        <div class="logo">
+                            @*<a href="index.html"><img src="~/img/logo/logo.png" alt=""></a>*@
+
+                            <h2>ПарЪ</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-sm-2 col-xs-2 text-center">
+                        <div class="main-menu display-inline">
+                            <nav style="display: block;">
+                                <ul class="menu">
+                                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Библиотека</a></li>
+                                    <li><a asp-area="" asp-controller="Home" asp-action="About">О нас</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-xs-6 col-sm-6 text-right text-sm text-res">
+                        <div class="cart-user-language">
+                            <partial name="_LoginPartial" />
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <form action="@Url.Action("RemoveGameFromCart","Home")" method="post">
+                                    <div class="shopping-cart ml-30">
+                                        <a class="top-cart" href="cart.html"><i class="pe-7s-cart"></i></a>
+                                        <ul>
+                                            @foreach (var item in Statics.ShoppingCart)
+                                            {
+                                                <li>
+                                                    <div class="cart-img">
+                                                        <a href="#"><img src="@item.PathThumbnail" alt=""></a>
+                                                    </div>
+                                                    <div class="cart-content">
+                                                        <h3><a href="#">@item.Name</a> </h3>
+                                                        @*<span><b>S, Orange</b></span>*@
+                                                        <span class="cart-price">@item.Price руб.</span>
+                                                    </div>
+                                                    <div class="cart-del">
+                                                        <button name="id" value="@item.Id.ToString()"><i class="pe-7s-close-circle"></i></button>
+                                                    </div>
+                                                </li>
+                                            }
+                                            <li>
+                                                <div class="shipping">
+                                                    <span class="f-left">Итого</span>
+                                                    <span class="f-right cart-price">@Statics.ShoppingCart.Sum(x => x.Price) руб.</span>
+                                                </div>
+                                            </li>
+                                            <li class="checkout m-0"><a href="#">checkout <i class="pe-7s-angle-right"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </form>
+                            }
+                            @*<div class="user">
+                                    <a href="#" data-toggle="modal" data-target="#loginModal"><i class="pe-7s-add-user"></i></a>
+                                </div>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="mobile-menu"></div>
+            </div>
+        </div>
+    </header>
+
+    @*<div class="modal fade" id="loginModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="login">
+                            <div class="login-form-container">
+                                <div class="login-text">
+                                    <h2>login</h2>
+                                    <span>Please login using account detail bellow.</span>
+                                </div>
+                                <div class="login-form">
+                                    <form action="#" method="post">
+                                        <input type="text" name="user-name" placeholder="Username">
+                                        <input type="password" name="user-password" placeholder="Password">
+                                        <div class="button-box">
+                                            <div class="login-toggle-btn">
+                                                <input type="checkbox" id="remember">
+                                                <label for="remember">Remember me</label>
+                                                <a href="#">Forgot Password?</a>
+                                            </div>
+                                            <button type="submit" class="default-btn floatright">Login</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+    <partial name="_CookieConsentPartial" />
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; 2018 - ПарЪилка</p>
+        </footer>
+    </div>
+
+
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    </environment>
+    <script>
+        $.fn.andSelf = function () { return this.addBack.apply(this, arguments); }
+    </script>
+    @RenderSection("Scripts", required: false)
+    <script src="~/js/jquery.meanmenu.js"></script>
+    <script src="~/js/isotope.pkgd.min.js"></script>
+    <script src="~/js/imagesloaded.pkgd.min.js"></script>
+    <script src="~/js/jquery.counterup.min.js"></script>
+    @*<script src="~/js/waypoints.min.js"></script>*@
+    <script src="~/js/owl.carousel.min.js"></script>
+    <script src="~/js/plugins.js"></script>
+    <script src="~/js/main.js"></script>
+</body>
+</html>
