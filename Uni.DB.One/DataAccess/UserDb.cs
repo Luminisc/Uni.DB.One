@@ -48,5 +48,11 @@ namespace Uni.DB.One.DataAccess
                    where user.Friends.Contains(friend.UserId)
                    select friend;
         }
+
+        public static void ChangeName(IdentityUser iuser, string name)
+        {
+            var update = Builders<Profile>.Update.Set(x => x.Name, name);
+            collection.FindOneAndUpdate(x => x.UserId == iuser.Id, update);
+        }
     }
 }

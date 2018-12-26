@@ -82,6 +82,17 @@ namespace Uni.DB.One.Controllers
             return View("Achievements", model);
         }
 
+        public async Task<IActionResult> ChangeName(string name)
+        {
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                var user = await User();
+                user.UserName = name;
+                UserDb.ChangeName(user, name);
+                await _userManager.UpdateAsync(user);
+            }
+            return await Profile((await User())?.Id);
+        }
 
         protected async Task<IdentityUser> User() => await _userManager.GetUserAsync(HttpContext.User);
     }
