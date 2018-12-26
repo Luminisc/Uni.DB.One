@@ -11,6 +11,8 @@ namespace Uni.DB.One.Models
         public string Name { get; set; }
         public string IconUrl { get; set; }
         public string LogoUrl { get; set; }
+        public string Reviews { get; set; }
+        public List<AchievementViewModel> Achievements { get; set; } = new List<AchievementViewModel>();
 
         public int Price { get; set; }
         public string PriceText => $"{Price / 100.0f} руб.";

@@ -33,35 +33,32 @@
                             <div class="price-ratting section">
                                 <!-- Price -->
                                 <span class="price float-left"><span class="new">@Model.PriceText</span></span>
-                                <!-- Ratting -->
+                                <!-- Rating -->
                                 <span class="ratting float-right">
                                     <i class="fa fa-star active"></i>
                                     <i class="fa fa-star active"></i>
                                     <i class="fa fa-star active"></i>
                                     <i class="fa fa-star active"></i>
                                     <i class="fa fa-star active"></i>
-                                    @*<span> (01 Customer Review)</span>*@
                                 </span>
                             </div>
-                            <!-- Short Description -->
-                            <div class="short-desc section">
-                                <h5 class="pd-sub-title">Описание</h5>
-                                <p>@Html.Raw(Model.Description)</p>
-                            </div>
-                            <!-- Product Size -->
-                            @*<div class="section">
-                                    <h5 class="pd-sub-title">Выберите тип издания</h5>
-                                    <button>Original</button>
-                                    <button class="active">Deluxe Editions</button>
-                                    <button>Ultimate Editions</button>
-                                </div>*@
-                            <!-- Quantity Cart -->
                             <div class="quantity-cart section">
-                                @*<div class="product-quantity2">
-                                    <input type="text" value="0">
-                                </div>*@
                                 <button class="add-to-cart" name="appid" value="@Model.AppId">Add to cart</button>
                             </div>
+                            <div class="short-desc section">
+                                <h5 class="pd-sub-title">Отзывы</h5>
+                                <p>@Html.Raw(Model.Reviews)</p>
+                                <h5 class="pd-sub-title">Описание</h5>
+                                <p>@Html.Raw(Model.Description)</p>
+                                <h5 class="pd-sub-title">Достижения</h5>
+                                <div class="pro-thumb-img-slider">
+                                    @foreach (var item in Model.Achievements)
+                                    {
+                                    <img src="@item.Path" alt="@item.Name" title="@item.Name" />
+                                    }
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

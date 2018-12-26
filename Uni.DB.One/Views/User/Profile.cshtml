@@ -1,0 +1,57 @@
+﻿@model Uni.DB.One.Models.User.ProfileViewModel
+@{
+    ViewData["Title"] = "Профиль";
+}
+
+<div class="waraper">
+    <div class="page-section section ptb-100">
+        <div class="container-fluid">
+            <div class="row mb-40">
+                <div class="col-md-2 col-sm-2 col-xs-12">
+                    <div class="row">
+                        <h3>@Model.Profile.Name</h3>
+                    </div>
+                    <div class="row">
+                        @{
+                            var base64 = Convert.ToBase64String(Model.Profile.UserImage);
+                            var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                            if (Model.Profile.UserImage.Length == 0)
+                            {
+                                imgSrc = "img/cart/1.jpg";
+                            }
+                        }
+
+                        <img src="@imgSrc" class="profile-icon" />
+                    </div>
+                    @if (Model.CanFriendship)
+                    {
+                        <form action="@Url.Action("AddFriend","User")" method="post">
+                            <button id="userId" value="@Model.Profile.Id">Добавить в друзья</button>
+                        </form>
+                    }
+                </div>
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                    <div class="ml-10 mr-10">
+                        <div class="row ml-10"><h2>Информация о пользователе</h2></div>
+                        <div class="row pb-10">
+                            <label class="col-md-4 col-sm-3 col-xs-12">Никнейм</label>
+                            <input class="col-md-6 col-sm-6 col-xs-12" type="text" value="@Model.Profile.Name" />
+                            <button class="col-md-2 col-sm-3 col-xs-12" disabled>Изменить</button>
+                        </div>
+                        <div class="row pb-10"">
+                            <label class="col-md-4 col-sm-3 col-xs-12">Адрес голубиной почты</label>
+                            <input class="col-md-6 col-sm-6 col-xs-12" type="text" value="@Model.Profile.Email" />
+                            <button class="col-md-2 col-sm-3 col-xs-12" disabled>Изменить</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-2 col-xs-12  f-right">
+                    <h4>@Html.ActionLink("Профиль", "Profile", "User", new { userId = Model.Profile.UserId }, new { @class = "col-md-12 f-right" })</h4>
+                    <h4>@Html.ActionLink("Друзья", "Friends", "User", new { userId = Model.Profile.UserId }, new { @class = "col-md-12 f-right" })</h4>
+                    <h4>@Html.ActionLink("Достижения", "Achievements", "User", new { userId = Model.Profile.UserId }, new { @class = "col-md-12 f-right" })</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

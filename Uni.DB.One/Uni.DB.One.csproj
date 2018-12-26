@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
-    <Folder Include="Views\User\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 

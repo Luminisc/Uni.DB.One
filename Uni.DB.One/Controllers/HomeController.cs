@@ -62,8 +62,6 @@ namespace Uni.DB.One.Controllers
             if (string.IsNullOrWhiteSpace(appid))
                 return await Index();
 
-            //var app = database.GetCollection<GameInfo>("Games").FindSync($"{{AppId = {appid}}}").FirstOrDefault();
-
             var gameInfo = Get($"https://store.steampowered.com/api/appdetails?appids={appid}&cc=ru&l=ru");
             JObject jgames = JsonConvert.DeserializeObject<JObject>(gameInfo);
             if (jgames[appid]["success"].Value<bool>() == false)
@@ -76,7 +74,8 @@ namespace Uni.DB.One.Controllers
                 AppId = appid,
                 Description = data["detailed_description"].ToString(),
                 Name = data["name"].ToString(),
-                Price = data["price_overview"]["final"].Value<int>()
+                Price = data["price_overview"]["final"].Value<int>(),
+                Reviews = data["reviews"].ToString()
             };
 
             JArray screenshots = data["screenshots"] as JArray;
@@ -87,6 +86,13 @@ namespace Uni.DB.One.Controllers
                 screens.Add(scr.ToObject<ScreenshotInfo>());
             }
             model.Screens = screens;
+
+            JArray jachievements = data["achievements"]["highlighted"] as JArray;
+            List<AchievementViewModel> achievements = jachievements.AsQueryable()
+                .Select(x => x.ToObject<AchievementViewModel>())
+                .ToList();
+            model.Achievements = achievements;
+
             return View(model);
         }
 

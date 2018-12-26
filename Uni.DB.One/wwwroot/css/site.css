@@ -41,3 +41,7 @@ body {
         display: none;
     }
 }
+
+.profile-icon {
+    width: 100px;
+}
