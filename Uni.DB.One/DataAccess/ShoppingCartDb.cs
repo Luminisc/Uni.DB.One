@@ -11,16 +11,15 @@ namespace Uni.DB.One.DataAccess
 {
     public class ShoppingCartDb
     {
-
+        protected static IMongoCollection<ShoppingCart> collection => DbStatics.Database.GetCollection<ShoppingCart>("ShoppingCart");
 
         public static ShoppingCart Get(IdentityUser user)
         {
-            return DbStatics.Database.GetCollection<ShoppingCart>("ShoppingCart").Find(x => x.UserID == user.Id).FirstOrDefault();
+            return collection.Find(x => x.UserID == user.Id).FirstOrDefault();
         }
 
         public static void AddItem(IdentityUser user, ShoppingCartItem item)
         {
-            var collection = DbStatics.Database.GetCollection<ShoppingCart>("ShoppingCart");
             var cart = collection.Find(x => x.UserID == user.Id).FirstOrDefault();
             if (cart == null)
             {
@@ -40,7 +39,6 @@ namespace Uni.DB.One.DataAccess
 
         public static void RemoveItem(IdentityUser user, ObjectId id)
         {
-            var collection = DbStatics.Database.GetCollection<ShoppingCart>("ShoppingCart");
             var cart = collection.Find(x => x.UserID == user.Id).FirstOrDefault();
             if (cart == null) return;
             var item = cart.Items.FirstOrDefault(x => x.Id == id);
@@ -50,6 +48,12 @@ namespace Uni.DB.One.DataAccess
                 var update = Builders<ShoppingCart>.Update.Set(x => x.Items, cart.Items);
                 collection.FindOneAndUpdate(x => x.Id == cart.Id, update);
             }
+        }
+
+        public static void CleanCart(IdentityUser user)
+        {
+            var update = Builders<ShoppingCart>.Update.Set(x => x.Items, new List<ShoppingCartItem>());
+            collection.FindOneAndUpdate(x => x.UserID == user.Id, update);
         }
     }
 }

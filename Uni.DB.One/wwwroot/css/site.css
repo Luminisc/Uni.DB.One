@@ -5,7 +5,8 @@ body {
     background-image: url("../img/sudar.gif");
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-size: 100px;
+    background-size: 400px;
+    background-position: 0 100%;
     /*opacity: 0.8;
     filter: alpha(opacity=80);*/
 }

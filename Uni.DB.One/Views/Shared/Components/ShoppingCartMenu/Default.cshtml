@@ -1,7 +1,7 @@
 ﻿@model ShoppingCart
 <form action="@Url.Action("RemoveGameFromCart","Home")" method="post">
     <div class="shopping-cart ml-30">
-        <a class="top-cart" href="cart.html"><i class="pe-7s-cart"></i></a>
+        <a class="top-cart" asp-controller="Home" asp-action="ShoppingCart"><i class="pe-7s-cart"></i></a>
         <ul>
             @foreach (var item in Model.Items)
             {
@@ -25,7 +25,7 @@
                     <span class="f-right cart-price">@Model.Items.Sum(x => x.Price) руб.</span>
                 </div>
             </li>
-            <li class="checkout m-0"><a href="#">checkout <i class="pe-7s-angle-right"></i></a></li>
+            <li class="checkout m-0"><a asp-controller="Home" asp-action="ShoppingCart">К оплате <i class="pe-7s-angle-right"></i></a></li>
         </ul>
     </div>
 </form>

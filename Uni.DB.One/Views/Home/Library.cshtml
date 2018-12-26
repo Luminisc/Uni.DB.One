@@ -1,0 +1,36 @@
+﻿@model GamesLibrary
+@{
+    ViewData["Title"] = "Библиотека";
+}
+
+<div>
+    <div class="text-center">
+        <div class="slider">
+            <h3>Ваша библиотека игр</h3>
+        </div>
+    </div>
+</div>
+
+<div class="shop-area ptb-90">
+    <div class="container-fluid">
+        <div class="shop-style-all">
+            <div class="row">
+                <div class="grid">
+                    @foreach (var game in Model.Items)
+                    {
+                        <div class="col-md-3 col-sm-6 col-xs-12 grid-item cat1">
+                            <div class="shop hover-style mb-30">
+                                <div class="shop-img">
+                                    <img src="@game.PathThumbnail" alt="" />
+                                </div>
+                                <div class="shop-title title-style-1">
+                                    <h3><a href="#">@game.Name</a></h3>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

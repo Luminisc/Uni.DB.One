@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -88,6 +89,20 @@ namespace Uni.DB_Task.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> ShoppingCart()
+        {
+            var cart = ShoppingCartDb.Get(await User());
+
+            return View(cart);
+        }
+
+        public async Task<IActionResult> Library()
+        {
+            var library = LibraryDb.Get(await User()) ?? new GamesLibrary();
+
+            return View(library);
+        }
+
         public async Task<IActionResult> AddGameToCart(string appid)
         {
             var gameInfo = Get($"https://store.steampowered.com/api/appdetails?appids={appid}&cc=ru&l=ru");
@@ -101,6 +116,7 @@ namespace Uni.DB_Task.Controllers
 
             var item = new ShoppingCartItem()
             {
+                AppId = appid,
                 Name = jgames[appid]["data"]["name"].ToString(),
                 Price = jgames[appid]["data"]["price_overview"]["final"].Value<int>() / 100,
                 PathThumbnail = game.GetLogoUrl
@@ -110,10 +126,21 @@ namespace Uni.DB_Task.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public async Task<IActionResult> RemoveGameFromCart(string id)
+        public async Task<IActionResult> RemoveGameFromCart(string id, bool gotocart = false)
         {
             ShoppingCartDb.RemoveItem(await User(), ObjectId.Parse(id));
+            if (gotocart)
+                return RedirectToAction("ShoppingCart", "Home");
             return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> CartCheckout()
+        {
+            var cart = ShoppingCartDb.Get(await User());
+            var libraryItems = cart.Items.Select(x => new GamesLibraryItem() { Name = x.Name, BuyDate = DateTime.Today, PathThumbnail = x.PathThumbnail, AppId = x.AppId });
+            LibraryDb.AddGames(await User(), libraryItems);
+            ShoppingCartDb.CleanCart(await User());
+            return RedirectToAction("Library", "Home");
         }
 
 
@@ -131,7 +158,7 @@ namespace Uni.DB_Task.Controllers
         }
         protected async Task<IdentityUser> User() => await _userManager.GetUserAsync(HttpContext.User);
 
-        
+
     }
 
 }
