@@ -15,7 +15,7 @@ namespace Uni.DB_Task.Controllers
     [ApiController]
     public class DbUtilsController : ControllerBase
     {
-        public bool PopulateGames(string gamesFile = @"D:\Git\University\Uni.DB_Task\wwwroot\games.json")
+        public bool PopulateGames(string gamesFile = @"D:\Git\University\Uni.DB.One\Uni.DB.One\wwwroot\games.json")
         {
             if (!System.IO.File.Exists(gamesFile)) return false;
             var gamesText = System.IO.File.ReadAllText(gamesFile);

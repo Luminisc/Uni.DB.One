@@ -62,9 +62,6 @@
 .main-menu ul li:hover > a {
     color: #999;
 }
-.logo img {
-    width: 100%;
-}
 /*------------- mobile menu --------------*/
 
 .mean-container .mean-bar {

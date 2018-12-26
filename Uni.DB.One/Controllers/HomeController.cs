@@ -17,34 +17,16 @@ namespace Uni.DB_Task.Controllers
 {
     public class HomeController : Controller
     {
-        static MongoClient client;
-        static IMongoDatabase database;
         UserManager<IdentityUser> _userManager;
 
         public HomeController(UserManager<IdentityUser> manager)
         {
             _userManager = manager;
-            if (client == null)
-                client = new MongoClient("mongodb://localhost:27017");
-            if (database == null)
-                database = client.GetDatabase("SteamDB");
-            //var collection = database.GetCollection<ShoppingCart>("ShoppingCart").Find(x=>x.UserID == );
-            //Statics.ShoppingCart = collection.AsQueryable().Select(x => x).ToList();
-            //var userID = await _userManager.GetUserAsync(HttpContext.User);
-
-
         }
 
         public async Task<IActionResult> Index()
         {
-            var collection = database.GetCollection<GameInfo>("Games").AsQueryable();
-            var store = collection.Select(x => new GameInfo()
-            {
-                AppId = x.AppId,
-                Name = x.Name,
-                LogoUrl = x.LogoUrl,
-                IconUrl = x.IconUrl
-            }).ToList();
+            var store = GamesDb.GetAllGames().ToList();
             return View("Index", new GamesStoreViewModel() { Games = store });
         }
 
@@ -115,14 +97,7 @@ namespace Uni.DB_Task.Controllers
                 return Error("О такой игре у нас нет информации, но вы держитесь и всего хорошего.");
             }
 
-            var games = database.GetCollection<GameInfo>("Games").Find(x => x.AppId == appid).ToList();
-            var game = games.Select(x => new GameInfo()
-            {
-                AppId = x.AppId,
-                Name = x.Name,
-                LogoUrl = x.LogoUrl,
-                IconUrl = x.IconUrl
-            }).First();
+            var game = GamesDb.GetGameInfo(appid);
 
             var item = new ShoppingCartItem()
             {
@@ -130,8 +105,7 @@ namespace Uni.DB_Task.Controllers
                 Price = jgames[appid]["data"]["price_overview"]["final"].Value<int>() / 100,
                 PathThumbnail = game.GetLogoUrl
             };
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            ShoppingCartDb.AddItem(user, item);
+            ShoppingCartDb.AddItem(await User(), item);
 
             return RedirectToAction("Index", "Home");
         }
