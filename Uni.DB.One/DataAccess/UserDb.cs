@@ -34,5 +34,19 @@ namespace Uni.DB.One.DataAccess
             iuser.Email = user.Email;
             return user;
         }
+
+        public static IEnumerable<Profile> GetFriends(IdentityUser iuser)
+        {
+            if (iuser == null)
+                return null;
+
+            var user = collection.Find(x => x.UserId == iuser.Id).FirstOrDefault();
+            if (user == null)
+                return null;
+
+            return from friend in collection.AsQueryable()
+                   where user.Friends.Contains(friend.UserId)
+                   select friend;
+        }
     }
 }

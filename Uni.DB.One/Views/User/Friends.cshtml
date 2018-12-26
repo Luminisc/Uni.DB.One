@@ -1,6 +1,6 @@
-﻿@model Uni.DB.One.Models.User.ProfileViewModel
+﻿@model Uni.DB.One.Models.User.ProfileFriendsViewModel
 @{
-    ViewData["Title"] = "Профиль";
+    ViewData["Title"] = "Достижения";
 }
 
 <div class="waraper">
@@ -32,16 +32,26 @@
                 </div>
                 <div class="col-md-8 col-sm-8 col-xs-12">
                     <div class="ml-10 mr-10">
-                        <div class="row ml-10"><h2>Информация о пользователе</h2></div>
-                        <div class="row pb-10">
-                            <label class="col-md-4 col-sm-3 col-xs-12">Никнейм</label>
-                            <input class="col-md-6 col-sm-6 col-xs-12" type="text" value="@Model.Profile.Name" />
-                            <button class="col-md-2 col-sm-3 col-xs-12" disabled>Изменить</button>
+                        <div class="row ml-10"><h2>Друзья</h2></div>
+                        <div class="row">
+                            <hr />
                         </div>
-                        <div class="row pb-10"">
-                            <label class="col-md-4 col-sm-3 col-xs-12">Адрес голубиной почты</label>
-                            <input class="col-md-6 col-sm-6 col-xs-12" type="text" value="@Model.Profile.Email" />
-                            <button class="col-md-2 col-sm-3 col-xs-12" disabled>Изменить</button>
+                        <div class="row">
+                            @foreach (var friend in Model.Friends)
+                            {
+                                <a class="col-md-2 col-sm-4 col-xs-6" href="@Url.Action("Profile","User", new { userId = friend.UserId })">
+                                    @{
+                                        var fbase64 = Convert.ToBase64String(Model.Profile.UserImage);
+                                        var fimgSrc = String.Format("data:image/gif;base64,{0}", fbase64);
+                                        if (Model.Profile.UserImage.Length == 0)
+                                        {
+                                            fimgSrc = Url.Content("~/img/cart/1.jpg");
+                                        }
+                                    }
+                                    <div class="row"><img src="@fimgSrc" title="@friend.Name" style="{width:100%}" /></div>
+                                    <div class="row"><h6>@friend.Name</h6></div>
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>

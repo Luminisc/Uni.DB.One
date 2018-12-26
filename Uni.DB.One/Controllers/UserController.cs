@@ -53,13 +53,14 @@ namespace Uni.DB.One.Controllers
 
             var user = await User();
             bool canFriendship = user != null && userId != user.Id;
-
-            ProfileViewModel model = new ProfileViewModel()
+            
+            ProfileFriendsViewModel model = new ProfileFriendsViewModel()
             {
                 Profile = profile,
-                CanFriendship = canFriendship
+                CanFriendship = canFriendship,
+                Friends = UserDb.GetFriends(user).ToList()
             };
-            return View("Profile", model);
+            return View("Friends", model);
         }
 
         public async Task<IActionResult> Achievements(string userId)
@@ -78,7 +79,7 @@ namespace Uni.DB.One.Controllers
                 Profile = profile,
                 CanFriendship = canFriendship
             };
-            return View("Profile", model);
+            return View("Achievements", model);
         }
 
 
