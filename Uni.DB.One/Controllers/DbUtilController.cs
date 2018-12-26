@@ -9,7 +9,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Uni.DB.One.Models;
 
-namespace Uni.DB_Task.Controllers
+namespace Uni.DB.One.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

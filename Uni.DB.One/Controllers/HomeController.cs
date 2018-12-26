@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using Uni.DB.One.DataAccess;
 using Uni.DB.One.Models;
 
-namespace Uni.DB_Task.Controllers
+namespace Uni.DB.One.Controllers
 {
     public class HomeController : Controller
     {
@@ -27,6 +27,7 @@ namespace Uni.DB_Task.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var user = UserDb.GetUser(await User());
             var store = GamesDb.GetAllGames().ToList();
             return View("Index", new GamesStoreViewModel() { Games = store });
         }
